@@ -13,11 +13,12 @@ import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.ioc.provider.ComboIocProvider;
 
 
-@IocBy(type=ComboIocProvider.class, args={"*js", "ioc/", "*anno", "com.gree.ioc",
+@IocBy(type=ComboIocProvider.class, args={"*js", "ioc/", "*anno",
+        "com.gree", //搜索该包下的IocBean
         "*tx", // 事务拦截 aop
         "*async"}) // 异步执行aop
 @Modules(scanPackage = true) ////1.r.58开始默认就是true
-@SetupBy(value= MainSetup.class)
+@SetupBy(value = MainSetup.class)
 public class MainModule {
 
 
