@@ -1,10 +1,9 @@
 
-import com.gree.beans.Person;
+import com.gree.bean.Person;
 import org.junit.Test;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
-import org.nutz.dao.QueryResult;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.dao.pager.Pager;

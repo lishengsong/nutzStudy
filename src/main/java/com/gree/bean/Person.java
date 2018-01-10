@@ -1,4 +1,4 @@
-package com.gree.beans;
+package com.gree.bean;
 
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;

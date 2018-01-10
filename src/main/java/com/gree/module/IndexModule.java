@@ -1,4 +1,4 @@
-package com.gree.modules;
+package com.gree.module;
 
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;

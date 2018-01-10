@@ -3,19 +3,31 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
   <display-name>nutz</display-name>
+
   <filter>
     <filter-name>nutz</filter-name>
     <filter-class>org.nutz.mvc.NutFilter</filter-class>
     <init-param>
       <param-name>modules</param-name>
-      <param-value>com.gree.modules.MainModule</param-value>
+      <param-value>com.gree.MainModule</param-value>
     </init-param>
   </filter>
-
   <filter-mapping>
     <filter-name>nutz</filter-name>
     <url-pattern>/*</url-pattern>
+    <!-- ForwardView需要下面的配置 @Ok("->:/xxx/yyy/zzz") -->
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
   </filter-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+
 </web-app>
