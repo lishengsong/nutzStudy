@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -22,14 +23,24 @@
 					<td>操作</td>
 				</tr>
 			</thead>
-			<tbody>
-
+				<c:forEach var="item" items="${obj.list}">
+				<tr>
+					<td>${item.id}</td>
+					<td>${item.name}</td>
+					<td>${item.salt}</td>
+					<td>${item.createTime}</td>
+				</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 	</div>
 	<div>
-		<a href="#">上一页</a>
-		<a href="#">下一页</a>
+		<c:if test="${obj.pager.pageNumber > 1  }">
+		   <a href="${base}/user/query?pageNumber=${obj.pager.pageNumber-1}&pageSize=2">上一页</a>
+		</c:if>
+		<c:if test="${obj.pager.pageNumber < obj.pager.pageCount }">
+			<a href="${base}/user/query?pageNumber=${obj.pager.pageNumber+1}&pageSize=2">下一页</a>
+		</c:if>
 	</div>
 </div>
 </body>

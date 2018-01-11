@@ -18,6 +18,7 @@
     <junit.version>4.12</junit.version>
     <slf4j.version>1.7.21</slf4j.version>
     <logback.version>1.1.8</logback.version>
+    <jstl.version>1.2</jstl.version>
   </properties>
 
   <dependencies>
@@ -50,6 +51,12 @@
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>${jstl.version}</version>
     </dependency>
 
   </dependencies>
