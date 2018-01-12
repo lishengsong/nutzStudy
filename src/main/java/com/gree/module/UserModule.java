@@ -65,17 +65,17 @@ public class UserModule {
         NutMap re = new NutMap("ok", false);
         if (Strings.isBlank(username) || Strings.isBlank(password)) {
             log.debug("username or password is null");
-            return re.setv("msg", "用户名或密码不能为空");
+            return re.setv("language", "用户名或密码不能为空");
         }
         User user = dao.fetch(User.class, username);
         if (user == null) {
             log.debug("no such user = " + username);
-            return re.setv("msg", "没有该用户");
+            return re.setv("language", "没有该用户");
         }
         //String tmp = Lang.digest("SHA-256", user.getSalt() + password);
         if (!password.equals(user.getPassword())) {
             log.debug("password is wrong");
-            return re.setv("msg", "密码错误");
+            return re.setv("language", "密码错误");
         }
         session.setAttribute("me", user);
         return re.setv("ok", true);
@@ -116,15 +116,15 @@ public class UserModule {
 
         NutMap result = new NutMap("ok",false);
 
-        if(Strings.isBlank(user.getName())) return result.setv("msg","用户名不能为空！");
-        if(Strings.isBlank(user.getPassword())) return result.setv("msg","密码不能为空");
+        if(Strings.isBlank(user.getName())) return result.setv("language","用户名不能为空！");
+        if(Strings.isBlank(user.getPassword())) return result.setv("language","密码不能为空");
         if(dao.fetch(User.class,user.getName()) != null)
-        return  result.setv("msg","该用户名已经存在aaf");
+        return  result.setv("language","该用户名已经存在aaf");
 
         dao.insert(user);
         if(user.getId()>0){
-            return result.setv("ok",true).setv("msg","添加成功");
-        }else return result.setv("msg","sql出现异常");
+            return result.setv("ok",true).setv("language","添加成功");
+        }else return result.setv("language","sql出现异常");
 
     }
     @POST
@@ -133,7 +133,7 @@ public class UserModule {
         NutMap re = new NutMap();
         String msg = checkUser(user, false);
         if (msg != null){
-            return re.setv("ok", false).setv("msg", msg);
+            return re.setv("ok", false).setv("language", msg);
         }
         user.setName(null);// 不允许更新用户名
         user.setCreateTime(null);//也不允许更新创建时间
@@ -147,7 +147,7 @@ public class UserModule {
     @At
     public Object delete(@Param("id")int id, @Attr("me")User me) {
         if (me.getId() == id) {
-            return new NutMap().setv("ok", false).setv("msg", "不能删除当前用户!!");
+            return new NutMap().setv("ok", false).setv("language", "不能删除当前用户!!");
         }
         dao.delete(User.class, id); // 再严谨一些的话,需要判断是否为>0
         return new NutMap().setv("ok", true);
