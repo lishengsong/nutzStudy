@@ -2,6 +2,8 @@ package com.gree.module;
 
 import com.gree.bean.User;
 import com.gree.bean.UserProfile;
+import com.gree.service.EmailService;
+import com.gree.service.impl.EmailServiceImpl;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
@@ -43,6 +45,9 @@ public class UserProfileModule {
 
     @Inject
     protected Dao dao; // 就这么注入了,有@IocBean它才会生效
+
+    @Inject
+    protected EmailServiceImpl emailService;
 
     @At("/")
     @GET
@@ -149,5 +154,15 @@ public class UserProfileModule {
             return new File(req.getServletContext().getRealPath("/rs/user_avatar/none.jpg"));
         }
         return profile.getAvatar();
+    }
+
+    @At("/active/mail")
+    @GET
+    @Ok("json")
+    public Object activeEmail(@Attr(scope = Scope.SESSION, value = "me")User user,HttpServletRequest request){
+        NutMap map = new NutMap();
+        emailService.send("chenggong768138@126.com","xiaochuan_test","h哈哈哈哈哈");
+        return map;
+
     }
 }
