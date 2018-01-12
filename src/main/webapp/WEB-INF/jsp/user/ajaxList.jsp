@@ -12,7 +12,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>用户列表</title>
-    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="${base}/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
         var pageNumber = 1;
         var pageSize = 10;
@@ -41,6 +41,11 @@
                 }
             });
         }
+
+        /**
+         * 读取图片
+         */
+
         $(function() {
             user_reload();
             $("#user_query_btn").click(function() {
@@ -56,12 +61,45 @@
                         if (data.ok) {
                             user_reload();
                             alert("添加成功");
+                            $("#logo").attr("src",base+"/user/profile/readAvatar");
                         } else {
                             alert(data.msg);
                         }
                     }
                 });
             });
+            var uploading = false;
+
+            $("#user_upload_img_btn").click(function () {
+
+                if (uploading) {
+                    alert("文件正在上传中，请稍候");
+                    return false;
+                }
+                $.ajax({
+                    url: base + "/user/profile/avatar",
+                    type: 'POST',
+                    cache: false,
+                    data: new FormData($('#user_upload_img_form')[0]),
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    beforeSend: function () {
+                        uploading = true;
+                    },
+                    success: function (data) {
+                        if (data.ok) {
+                            // $("#logo").attr("src", data.msg);
+                            alert("上传成功");
+                        } else {
+                            alert(data.msg);
+                        }
+                        uploading = false;
+                    }
+
+                });
+            });
+
         });
         function user_update(userId) {
             var passwd = prompt("请输入新的密码");
@@ -101,6 +139,9 @@
                 });
             }
         };
+
+
+
     </script>
 </head>
 <body>
@@ -126,6 +167,19 @@
         密码<input name="password">
     </form>
     <button id="user_add_btn">新增</button>
+</div>
+
+<div>
+    <p>---------------------------------------------------------------</p>
+</div>
+<div id="user_upload_img">
+
+    <form action="#" id="user_upload_img_form" enctype='multipart/form-data'>
+        <img id="logo" class="ctn-uploadImg" src="" draggable="false">
+        点击我上传图片
+        <input type="file" id="ctn-input-file" name="file"   style="height:40px">
+    </form>
+    <button id="user_upload_img_btn">新增</button>
 </div>
 </body>
 </html>

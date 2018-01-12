@@ -32,9 +32,9 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.11.3/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdn.staticfile.org/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
+	<script type="text/javascript" src="${base}/js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="${base}/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="${base}/js/layer.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			$("#login_button").click(function() {
@@ -47,7 +47,7 @@
 						if (resp) {
 							if (resp.ok) {
 								//layer.alert("登录成功,即将跳转");
-								window.location = "${base}/user/index";
+								window.location = "${base}/user/list";
 							} else {
 								layer.alert("登录失败: " + resp.msg);
 							}

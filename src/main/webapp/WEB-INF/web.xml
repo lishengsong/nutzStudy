@@ -24,7 +24,7 @@
 
   <filter>
     <filter-name>nutz</filter-name>
-    <filter-class>org.nutz.mvc.NutFilter</filter-class>
+    <filter-class>com.gree.mvc.NutzStudyNutFilter</filter-class>
     <init-param>
       <param-name>modules</param-name>
       <param-value>com.gree.MainModule</param-value>

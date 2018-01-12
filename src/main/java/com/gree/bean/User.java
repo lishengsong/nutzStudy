@@ -10,7 +10,7 @@ import java.util.Date;
  * @description: user bean
  */
 @Table("t_user")
-public class User {
+public class User extends  BaseBean {
 
     @Id
     private int id;
@@ -29,12 +29,10 @@ public class User {
     @Column
     private int age;
 
-    @Column("ct")
-    @Prev(els = @EL("now()"))
-    private Date createTime;
+    @One(field="id", key="userId") // 1.r.59之前需要写target参数
+    protected UserProfile profile;
 
-    @Column("ut")
-    private Date updateTime;
+
 
     public int getId() {
         return id;
@@ -76,32 +74,7 @@ public class User {
         this.age = age;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", salt='" + salt + '\'' +
-                ", age=" + age +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                '}';
-    }
 }
