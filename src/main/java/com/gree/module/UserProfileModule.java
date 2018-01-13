@@ -2,8 +2,10 @@ package com.gree.module;
 
 import com.gree.bean.User;
 import com.gree.bean.UserProfile;
-import com.gree.service.EmailService;
 import com.gree.service.impl.EmailServiceImpl;
+import com.gree.util.Toolkit;
+import org.nutz.dao.Chain;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
@@ -11,6 +13,9 @@ import org.nutz.dao.util.Daos;
 import org.nutz.img.Images;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
+
+import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -18,12 +23,14 @@ import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
+
 import org.nutz.mvc.filter.CheckSession;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 import org.nutz.mvc.upload.TempFile;
 import org.nutz.mvc.upload.UploadAdaptor;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -48,6 +55,8 @@ public class UserProfileModule {
 
     @Inject
     protected EmailServiceImpl emailService;
+
+    protected byte[] emailKEY = R.sg(24).next().getBytes();
 
     @At("/")
     @GET
@@ -157,12 +166,63 @@ public class UserProfileModule {
     }
 
     @At("/active/mail")
-    @GET
-    @Ok("json")
-    public Object activeEmail(@Attr(scope = Scope.SESSION, value = "me")User user,HttpServletRequest request){
-        NutMap map = new NutMap();
-        emailService.send("chenggong768138@126.com","xiaochuan_test","h哈哈哈哈哈");
-        return map;
+    @POST
+    public Object activeMail(@Attr(scope=Scope.SESSION, value="me")User user,
+                             HttpServletRequest req) {
+        NutMap re = new NutMap();
+        UserProfile profile = get(user);
+        if (Strings.isBlank(profile.getEmail())) {
+            return re.setv("ok", false).setv("msg", "你还没有填邮箱啊!");
+        }
+        String token = String.format("%s,%s,%s", user.getId(), profile.getEmail(), System.currentTimeMillis());
+        token = Toolkit._3DES_encode(emailKEY, token.getBytes());
+        String url = req.getRequestURL() + "?token=" + token;
+        String html = "<div>如果无法点击,请拷贝一下链接到浏览器中打开<p/>验证链接 %s</div>";
+        html = String.format(html, url, url);
+        try {
+            boolean ok = emailService.send(profile.getEmail(), "XXX 验证邮件 by Nutzbook", html);
+            if (!ok) {
+                return re.setv("ok", false).setv("msg", "发送失败");
+            }
+        } catch (Throwable e) {
+            log.debug("发送邮件失败", e);
+            return re.setv("ok", false).setv("msg", "发送失败");
+        }
+        return re.setv("ok", true);
+    }
 
+    @Filters // 不需要先登录,很明显...
+    @At("/active/mail")
+    @GET
+    @Ok("raw") // 为了简单起见,这里直接显示验证结果就好了
+    public String activeMailCallback(@Param("token")String token, HttpSession session) {
+        if (Strings.isBlank(token)) {
+            return "请不要直接访问这个链接!!!";
+        }
+        if (token.length() < 10) {
+            return "非法token";
+        }
+        try {
+            token = Toolkit._3DES_decode(emailKEY, Toolkit.hexstr2bytearray(token));
+            if (token == null)
+                return "非法token";
+            String[] tmp = token.split(",", 3);
+            if (tmp.length != 3 || tmp[0].length() == 0 || tmp[1].length() == 0 || tmp[2].length() == 0)
+                return "非法token";
+            long time = Long.parseLong(tmp[2]);
+            if (System.currentTimeMillis() - time > 10*60*1000) {
+                return "该验证链接已经超时";
+            }
+            int userId = Integer.parseInt(tmp[0]);
+            Cnd cnd = Cnd.where("userId", "=", userId).and("email", "=", tmp[1]);
+            int re = dao.update(UserProfile.class, Chain.make("emailChecked", true), cnd);
+            if (re == 1) {
+                return "验证成功";
+            }
+            return "验证失败!!请重新验证!!";
+        } catch (Throwable e) {
+            log.debug("检查token时出错", e);
+            return "非法token";
+        }
     }
 }
