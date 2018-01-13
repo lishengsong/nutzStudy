@@ -26,7 +26,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
 
@@ -50,7 +50,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
         dao.drop(Person.class);
@@ -66,7 +66,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
 
@@ -90,7 +90,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
 
@@ -113,7 +113,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
         Person p = dao.fetch(Person.class,1);
@@ -139,7 +139,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
         List<Person> people = dao.query(Person.class, null);
@@ -156,7 +156,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
         int count = dao.func(Person.class, "sum", "age");
@@ -174,7 +174,7 @@ public class DaoTest {
         SimpleDataSource dataSource = new SimpleDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutz_study");
         dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setPassword("greeadmin");
         // 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
         Dao dao = new NutDao(dataSource);
         Pager pager = dao.createPager(1, 2);

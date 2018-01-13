@@ -123,7 +123,7 @@ public class UserModule {
         if(Strings.isBlank(user.getPassword())) return result.setv("language","密码不能为空");
         if(dao.fetch(User.class,user.getName()) != null)
         return  result.setv("language","该用户名已经存在aaf");
-
+        user.setUpdateTime(new Date());
         dao.insert(user);
         if(user.getId()>0){
             return result.setv("ok",true).setv("language","添加成功");

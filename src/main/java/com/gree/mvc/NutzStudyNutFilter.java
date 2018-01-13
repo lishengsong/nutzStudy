@@ -24,6 +24,13 @@ public class NutzStudyNutFilter extends NutFilter {
         super.init(conf);
         prefixs.add(conf.getServletContext().getContextPath() + "/druid/");
         prefixs.add(conf.getServletContext().getContextPath() + "/rs/");
+        /*可以省去
+        <init-param>
+          <param-name>exclusions</param-name>
+          <param-value>/rs/*,/druid/*</param-value>
+        </init-param>
+        */
+
     }
 
     @Override

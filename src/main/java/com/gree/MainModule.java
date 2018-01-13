@@ -17,11 +17,10 @@ import org.nutz.mvc.ioc.provider.ComboIocProvider;
 @IocBy(type=ComboIocProvider.class, args={"*js", "ioc/", "*anno",
         "com.gree", //搜索该包下的IocBean
         "*tx", // 事务拦截 aop
+        "*async", // 异步执行aop
         "*quartz"}) // 即添加了 org.nutz.integration.quartz.QuartzIocLoader 这个预定义的集成配置
 @Modules(scanPackage = true) ////1.r.58开始默认就是true
 @SetupBy(value = MainSetup.class)
 public class MainModule {
-
-
 
 }

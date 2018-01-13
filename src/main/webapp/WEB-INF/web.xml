@@ -29,10 +29,10 @@
       <param-name>modules</param-name>
       <param-value>com.gree.MainModule</param-value>
     </init-param>
-    <init-param>
+<!--    <init-param>
       <param-name>exclusions</param-name>
       <param-value>/rs/*,/druid/*</param-value>
-    </init-param>
+    </init-param>-->
   </filter>
   <filter-mapping>
     <filter-name>nutz</filter-name>
