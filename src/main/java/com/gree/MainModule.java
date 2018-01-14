@@ -1,5 +1,6 @@
 package com.gree;
 
+import org.nutz.integration.shiro.ShiroSessionProvider;
 import org.nutz.mvc.annotation.*;
 
 /**
@@ -10,7 +11,7 @@ import org.nutz.mvc.annotation.*;
 
 import org.nutz.mvc.ioc.provider.ComboIocProvider;
 
-
+@SessionBy(ShiroSessionProvider.class)
 @ChainBy(args="mvc/mvc-chain.js")
 @Fail("jsp:jsp.500")
 @Localization(value="language/", defaultLocalizationKey="zh-CN")

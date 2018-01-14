@@ -2,6 +2,7 @@ package com.gree.module;
 
 import com.gree.bean.User;
 import com.gree.bean.UserProfile;
+import com.gree.service.impl.UserServiceImpl;
 import org.nutz.aop.interceptor.ioc.TransAop;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -37,6 +38,9 @@ public class UserModule {
 
     @Inject
     protected Dao dao; // 就这么注入了,有@IocBean它才会生效
+
+    @Inject
+    protected UserServiceImpl userServiceImpl;
 
     @At
     public int count() {
@@ -76,12 +80,18 @@ public class UserModule {
             return re.setv("language", "没有该用户");
         }
         //String tmp = Lang.digest("SHA-256", user.getSalt() + password);
-        if (!password.equals(user.getPassword())) {
+        /*if (!password.equals(user.getPassword())) {
             log.debug("password is wrong");
             return re.setv("language", "密码错误");
+        }*/
+        int userId = userServiceImpl.fetch(username, password);
+        if(userId < 0){
+            return re.setv("ok", false).setv("msg", "用户名或密码错误");
+        } else {
+            session.setAttribute("me", user);
+            return re.setv("ok", true);
         }
-        session.setAttribute("me", user);
-        return re.setv("ok", true);
+
     }
 
     @At
@@ -123,8 +133,9 @@ public class UserModule {
         if(Strings.isBlank(user.getPassword())) return result.setv("language","密码不能为空");
         if(dao.fetch(User.class,user.getName()) != null)
         return  result.setv("language","该用户名已经存在aaf");
-        user.setUpdateTime(new Date());
-        dao.insert(user);
+        /*user.setUpdateTime(new Date());
+        dao.insert(user);*/
+        user = userServiceImpl.add(user.getName(), user.getPassword());
         if(user.getId()>0){
             return result.setv("ok",true).setv("language","添加成功");
         }else return result.setv("language","sql出现异常");
@@ -138,10 +149,11 @@ public class UserModule {
         if (msg != null){
             return re.setv("ok", false).setv("language", msg);
         }
-        user.setName(null);// 不允许更新用户名
+        /*user.setName(null);// 不允许更新用户名
         user.setCreateTime(null);//也不允许更新创建时间
         user.setUpdateTime(new Date());// 设置正确的更新时间
-        dao.updateIgnoreNull(user);// 真正更新的其实只有password和salt
+        dao.updateIgnoreNull(user);// 真正更新的其实只有password和salt*/
+        userServiceImpl.updatePassword(user.getId(), user.getPassword());
         return re.setv("ok", true);
     }
 

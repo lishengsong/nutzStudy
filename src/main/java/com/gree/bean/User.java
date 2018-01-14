@@ -3,6 +3,7 @@ package com.gree.bean;
 import org.nutz.dao.entity.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @user: 180296-Web寻梦狮
@@ -28,6 +29,13 @@ public class User extends  BaseBean {
 
     @Column
     private int age;
+
+    @Column
+    private boolean locked;
+    @ManyMany(from="u_id", relation="t_user_role", target=Role.class, to="role_id")
+    protected List<Role> roles;
+    @ManyMany(from="u_id", relation="t_user_permission", target=Permission.class, to="permission_id")
+    protected List<Permission> permissions;
 
     @One(field="id", key="userId") // 1.r.59之前需要写target参数
     protected UserProfile profile;
@@ -74,7 +82,35 @@ public class User extends  BaseBean {
         this.age = age;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
 
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public UserProfile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(UserProfile profile) {
+        this.profile = profile;
+    }
 }
