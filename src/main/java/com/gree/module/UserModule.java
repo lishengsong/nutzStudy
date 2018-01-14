@@ -208,4 +208,11 @@ public class UserModule {
         throw new RuntimeException();
     }
 
+
+    @GET
+    @At("/newLogin")
+    @Filters
+    @Ok("jsp:jsp.user.newLogin") // 降内部重定向到登录jsp
+    public void newLoginPage() {}
+
 }
