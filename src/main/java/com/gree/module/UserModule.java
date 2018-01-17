@@ -3,11 +3,14 @@ package com.gree.module;
 import com.gree.bean.User;
 import com.gree.bean.UserProfile;
 import com.gree.service.impl.UserServiceImpl;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.nutz.aop.interceptor.ioc.TransAop;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.QueryResult;
 import org.nutz.dao.pager.Pager;
+import org.nutz.integration.shiro.SimpleShiroToken;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -19,7 +22,6 @@ import org.nutz.mvc.annotation.*;
 import org.nutz.mvc.filter.CheckSession;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,10 +29,10 @@ import java.util.List;
  * @Date Created in 下午9:45 2018/1/10
  * @Description: UserModule
  */
-@Filters(@By(type = CheckSession.class, args = {"me", "/user/login"})) //含义是,如果当前Session没有带me这个attr,就跳转到/页面,即首页.
+//@Filters(@By(type = CheckSession.class, args = {"me", "/user/login"})) //含义是,如果当前Session没有带me这个attr,就跳转到/页面,即首页.
 @At("/user")
 @Ok("json:{locked:'password|salt'}") //另外, 密码和salt也不可以发送到浏览器去
-@Fail("http:500")
+//@Fail("http:500")
 @IocBean // 还记得@IocBy吗? 这个跟@IocBy有很大的关系哦
 public class UserModule {
 
@@ -50,7 +52,7 @@ public class UserModule {
 
     //同时,为login方法设置为空的过滤器,不然就没法登陆了
 
-    @Filters
+   // @Filters
     @GET
     @At({"/login"})
     @Ok("jsp:jsp.user.login")
@@ -60,12 +62,14 @@ public class UserModule {
     @At({"/", "/index"})
     @Ok("jsp:jsp.user.index")
     public void indexPage() {}
+
+    @RequiresUser
     @GET
     @At({"/list"})
     @Ok("jsp:jsp.user.ajaxList")
     public void ajaxListPage() {}
 
-    @Filters
+   // @Filters
     @POST
     @At
     public NutMap login(@Param("username")String username,@Param("password")String password, HttpSession session) {
@@ -84,13 +88,16 @@ public class UserModule {
             log.debug("password is wrong");
             return re.setv("language", "密码错误");
         }*/
-        int userId = userServiceImpl.fetch(username, password);
-        if(userId < 0){
+        //int userId = userServiceImpl.fetch(username, password);
+        SecurityUtils.getSubject().login(new SimpleShiroToken(user.getId()));
+        session.setAttribute("me", user);
+        return re.setv("ok", true);
+       /* if(userId < 0){
             return re.setv("ok", false).setv("msg", "用户名或密码错误");
         } else {
             session.setAttribute("me", user);
             return re.setv("ok", true);
-        }
+        }*/
 
     }
 
@@ -100,7 +107,7 @@ public class UserModule {
         session.invalidate();
     }
 
-
+    @RequiresUser
     @At
     @Ok("jsp:jsp.user.list") //内部跳转到jsp,直接访问不了
     public QueryResult query(@Param("username")String name,@Param("..") Pager pager) {
@@ -111,7 +118,7 @@ public class UserModule {
         QueryResult qr = new QueryResult(users, pager);//默认分页是第1页,每页20条
         return qr;
     }
-
+    @RequiresUser
     @POST
     @At
     public QueryResult list(@Param("username")String name,@Param("..") Pager pager) {
@@ -122,7 +129,7 @@ public class UserModule {
         return qr;
     }
 
-
+    @RequiresUser
     @POST
     @At
     public NutMap add(@Param("..")User user){
@@ -141,6 +148,8 @@ public class UserModule {
         }else return result.setv("language","sql出现异常");
 
     }
+
+    @RequiresUser
     @POST
     @At
     public Object update(@Param("..")User user) {
@@ -157,7 +166,7 @@ public class UserModule {
         return re.setv("ok", true);
     }
 
-
+    @RequiresUser
     @POST
     @At
     @Aop(TransAop.READ_COMMITTED)//之所以可用,是因为MainModule中的@IocBy(args={....., "*tx", .....}) // *tx所加载的事务aop
@@ -201,7 +210,7 @@ public class UserModule {
             user.setName(user.getName().trim());
         return null;
     }
-    @Filters
+   // @Filters
     @At
     @Fail("jsp:jsp.500")
     public void error() {
@@ -211,7 +220,7 @@ public class UserModule {
 
     @GET
     @At("/newLogin")
-    @Filters
+   // @Filters
     @Ok("jsp:jsp.user.newLogin") // 降内部重定向到登录jsp
     public void newLoginPage() {}
 
