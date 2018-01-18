@@ -9,6 +9,7 @@ import java.util.List;
  * @Date Created in 下午1:17 2018/1/14
  * @Description:
  */
+@Table("t_role")
 public class Role  extends BaseBean{
     @Id
     protected long id;

@@ -25,8 +25,14 @@ public class SimpleAuthorizingRealm extends AuthorizingRealm {
 
     protected Dao dao; // ShiroFilter先于NutFilter初始化化,所以无法使用注入功能
 
+    /**
+     * 理解为是权限验证
+     * @param principals
+     * @return
+     */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         // null usernames are invalid
+        System.out.println("doGetAuthorizationInfo---------------------------");
         if (principals == null) {
             throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
         }
@@ -39,6 +45,7 @@ public class SimpleAuthorizingRealm extends AuthorizingRealm {
 
         SimpleAuthorizationInfo auth = new SimpleAuthorizationInfo();
         user = dao().fetchLinks(user, null);
+        System.out.println("user = dao().fetchLinks(user, null);----======:"+user.toString());
         if (user.getRoles() != null) {
             dao().fetchLinks(user.getRoles(), null);
             for (Role role : user.getRoles()) {
@@ -58,7 +65,14 @@ public class SimpleAuthorizingRealm extends AuthorizingRealm {
         return auth;
     }
 
+    /**
+     *  理解为登陆验证
+     * @param token
+     * @return
+     * @throws AuthenticationException
+     */
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        System.out.println("doGetAuthenticationInfo******************************");
         SimpleShiroToken upToken = (SimpleShiroToken) token;
         // upToken.getPrincipal() 的返回值就是SimpleShiroToken构造方法传入的值
         // 可以是int也可以是User类实例,或任何你希望的值,自行处理一下就好了
