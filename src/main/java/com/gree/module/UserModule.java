@@ -4,6 +4,7 @@ import com.gree.bean.User;
 import com.gree.bean.UserProfile;
 import com.gree.service.impl.UserServiceImpl;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.nutz.aop.interceptor.ioc.TransAop;
 import org.nutz.dao.Cnd;
@@ -107,7 +108,8 @@ public class UserModule {
         session.invalidate();
     }
 
-    @RequiresUser
+    //@RequiresUser
+    @RequiresPermissions("user:list")
     @At
     @Ok("jsp:jsp.user.list") //内部跳转到jsp,直接访问不了
     public QueryResult query(@Param("username")String name,@Param("..") Pager pager) {
@@ -118,7 +120,8 @@ public class UserModule {
         QueryResult qr = new QueryResult(users, pager);//默认分页是第1页,每页20条
         return qr;
     }
-    @RequiresUser
+    //@RequiresUser
+    @RequiresPermissions("user:list")
     @POST
     @At
     public QueryResult list(@Param("username")String name,@Param("..") Pager pager) {
@@ -129,7 +132,8 @@ public class UserModule {
         return qr;
     }
 
-    @RequiresUser
+    //@RequiresUser
+    @RequiresPermissions("user:add")
     @POST
     @At
     public NutMap add(@Param("..")User user){
@@ -149,7 +153,8 @@ public class UserModule {
 
     }
 
-    @RequiresUser
+    //@RequiresUser
+    @RequiresPermissions("user:update")
     @POST
     @At
     public Object update(@Param("..")User user) {
@@ -166,7 +171,8 @@ public class UserModule {
         return re.setv("ok", true);
     }
 
-    @RequiresUser
+    //@RequiresUser
+    @RequiresPermissions("user:delete")
     @POST
     @At
     @Aop(TransAop.READ_COMMITTED)//之所以可用,是因为MainModule中的@IocBy(args={....., "*tx", .....}) // *tx所加载的事务aop

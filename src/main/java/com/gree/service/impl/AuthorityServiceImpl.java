@@ -11,6 +11,7 @@ import org.nutz.dao.entity.Record;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +53,15 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     }
 
-    public Role addRole(String role) {
-        return null;
+    public Role addRole(String rolename) {
+
+        Role role = new Role();
+        role.setName(rolename);
+        role.setAlias("超级管理员");
+        Date date = new Date();
+        role.setCreateTime(date);
+        role.setUpdateTime(date);
+        dao.insert(role);
+        return role;
     }
 }

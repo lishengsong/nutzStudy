@@ -16,7 +16,7 @@ import java.util.Date;
 public abstract class BaseBean {
 
     @Column("ct")
-    @Prev(els = @EL("now()"))
+    //@Prev(els = @EL("now()"))
     protected Date createTime;
     @Column("ut")
     protected Date updateTime;

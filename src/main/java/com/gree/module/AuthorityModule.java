@@ -5,8 +5,13 @@ import com.gree.bean.Role;
 import com.gree.bean.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.nutz.aop.interceptor.ioc.TransAop;
+import org.nutz.dao.Cnd;
+import org.nutz.dao.QueryResult;
+import org.nutz.dao.pager.Pager;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
 
@@ -23,11 +28,22 @@ import java.util.List;
 @Ok("void")//避免误写导致敏感信息泄露到服务器外
 public class AuthorityModule extends BaseModule {
 
+
+
+    @At("/")
+    @Ok("jsp:jsp.page.simple_role")
+    @GET
+    public void page(){
+
+    }
+
+
+
     /**
      * 更新用户所属角色/特许权限
      */
     @POST
-    @AdaptBy(type=JsonAdaptor.class)
+    @AdaptBy(type=JsonAdaptor.class) //以json接受数据,解决表单传值容易出现串值的问题
     @RequiresPermissions("authority:user:update")
     @At("/user/update")
     @Aop(TransAop.READ_COMMITTED)
@@ -70,6 +86,36 @@ public class AuthorityModule extends BaseModule {
             user.setPermissions(ps);
             dao.insertRelation(user, "permissions");
         }
+    }
+
+    @AdaptBy(type = JsonAdaptor.class)
+    @At("/permission/add")
+    @POST
+    @Ok("json")
+    public NutMap addPermission(@Param("name")String persmission){
+        NutMap map = new NutMap("status","fail");
+        Permission permission = new Permission();
+        permission.setName(persmission);
+        dao.insert(permission);
+        if(permission.getId()>0){
+            map.setv("status","ok").setv("message","新增权限成功！");
+        } else {
+            map.setv("message","新增权限失败");
+        }
+        return map;
+    }
+
+    @AdaptBy(type = JsonAdaptor.class)
+    @POST
+    @At("/permission/list")
+    @Ok("json")
+    public QueryResult list(@Param("name")String pername, @Param("..") Pager pager) {
+
+        Cnd cnd = Strings.isBlank(pername) ? null : Cnd.where("name", "like", "%"+pername+"%");
+        List<Permission> users = dao.query(Permission.class, cnd , pager);
+        pager.setRecordCount(dao.count(Permission.class));
+        QueryResult qr = new QueryResult(users, pager);
+        return qr;
     }
 
 }

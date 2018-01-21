@@ -1,6 +1,8 @@
 package com.gree;
 
 import com.gree.bean.User;
+import com.gree.service.AuthorityService;
+import com.gree.service.impl.AuthorityServiceImpl;
 import com.gree.service.impl.UserServiceImpl;
 import org.apache.commons.mail.HtmlEmail;
 import org.nutz.dao.Dao;
@@ -45,6 +47,10 @@ public class MainSetup implements Setup{
         // 获取NutQuartzCronJobFactory从而触发计划任务的初始化与启动
         ioc.get(NutQuartzCronJobFactory.class);
 
+
+        AuthorityService as = ioc.get(AuthorityServiceImpl.class);
+        as.initFormPackage("com.gree.module");
+        as.checkBasicRoles(dao.fetch(User.class, "admin"));
 
         // 测试发送邮件
         /*try {
